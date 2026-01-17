@@ -118,26 +118,19 @@ class Ovesio extends \Opencart\System\Engine\Controller
         ];
 
         foreach ($events as $trigger => $action) {
-            $model->addEvent([
-                'code'        => $this->module_key,
-                'description' => '',
-                'trigger'     => $trigger,
-                'action'      => $action,
-                'status'      => 1,
-                'sort_order'  => 0
-            ]);
+            $model->addEvent($this->module_key, '', $trigger, $action, 1, 0);
         }
 
         $hash = md5(uniqid(rand(), true));
 
-        $config_language = $this->config->get('config_language_catalog');
+        $config_language = $this->config->get('config_language');
 
         $defaults = [];
         $defaults['status']           = 0;
         $defaults['hash']             = $hash;
         $defaults['api_url']          = 'https://api.ovesio.com/v1/';
         $defaults['api_token']        = '';
-        $defaults['default_language'] = substr($config_language, 0, 2);
+        $defaults['default_language'] = $config_language ? substr($config_language, 0, 2) : 'en';
 
         $defaults['generate_content_status']          = '';
         $defaults['generate_content_include_stock_0'] = 1;
@@ -1033,6 +1026,9 @@ class Ovesio extends \Opencart\System\Engine\Controller
         $hash = $this->config->get($this->module_key . '_hash');
         $data['url_settings']      = $this->url->link('extension/ovesio/module/ovesio', $this->tokenQs());
         $data['url_update_status'] = $catalog_server . 'index.php?route=extension/ovesio/module/ovesio/callback.updateActivityStatus&hash=' . $hash;
+
+        $this->document->addStyle($catalog_server . 'extension/ovesio/admin/view/stylesheet/ovesio.css');
+        $this->document->addScript($catalog_server . 'extension/ovesio/admin/view/javascript/ovesio.js');
 
         $data['header']      = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');

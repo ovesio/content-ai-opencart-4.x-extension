@@ -10,7 +10,7 @@ class ModelExtensionModuleOvesio extends \Opencart\System\Engine\Model
         parent::__construct($registry);
 
         $default_language = $this->config->get($this->module_key . '_default_language');
-        $config_language  = $this->config->get('config_language_catalog');
+        $config_language  = $this->config->get('config_language');
 
         if (stripos($default_language, $config_language) === 0 || $default_language == 'auto') {
             $default_language_id = $this->config->get('config_language_id');
