@@ -19,7 +19,7 @@ class Ovesio extends \Opencart\System\Engine\Model
         $this->db->cache = false; //custom cache query disabled
 
         $default_language = $this->config->get($this->module_key . '_default_language');
-        $config_language  = $this->config->get('config_language');
+        $config_language  = $this->config->get('config_language_catalog');
 
         if (stripos($default_language, $config_language) === 0 || $default_language == 'auto') {
             $default_language_id = $this->config->get('config_language_id');

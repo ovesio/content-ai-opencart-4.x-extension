@@ -130,7 +130,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
         $hash = md5(uniqid(rand(), true));
 
-        $config_language = $this->config->get('config_language');
+        $config_language = $this->config->get('config_language_catalog');
 
         $defaults = [];
         $defaults['status']           = 0;
