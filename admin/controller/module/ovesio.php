@@ -118,7 +118,14 @@ class Ovesio extends \Opencart\System\Engine\Controller
         ];
 
         foreach ($events as $trigger => $action) {
-            $model->addEvent($this->module_key, '', $trigger, $action, 1, 0);
+            $model->addEvent([
+                'code'        => $this->module_key,
+                'description' => '',
+                'trigger'     => $trigger,
+                'action'      => $action,
+                'status'      => 1,
+                'sort_order'  => 0
+            ]);
         }
 
         $hash = md5(uniqid(rand(), true));
