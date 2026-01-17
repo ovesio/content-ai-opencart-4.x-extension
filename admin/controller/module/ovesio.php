@@ -31,6 +31,14 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
 		$this->document->setTitle(strip_tags($this->language->get('heading_title')));
 
+        $catalog_server = defined('HTTPS_CATALOG') ? HTTPS_CATALOG : (defined('HTTP_CATALOG') ? HTTP_CATALOG : '');
+
+        $this->document->addStyle($catalog_server . 'extension/ovesio/admin/view/stylesheet/ovesio.css');
+        $this->document->addScript($catalog_server . 'extension/ovesio/admin/view/javascript/ovesio.js');
+        $this->document->addScript($catalog_server . 'extension/ovesio/admin/view/javascript/ovesio_inject.js');
+
+        $data['logo_url'] = $catalog_server . 'extension/ovesio/admin/view/image/logo-ovesio-sm.png';
+
         $this->load->model('setting/setting');
 
         $settings = $this->model_setting_setting->getSetting($this->module_key);
@@ -38,12 +46,11 @@ class Ovesio extends \Opencart\System\Engine\Controller
         foreach ($settings as $key => $value) {
             $data[str_replace($this->module_key . '_', '', $key)] = $value;
         }
-
         $data['url_connect']    = $this->url->link('extension/ovesio/module/ovesio.connect', $this->tokenQs());
         $data['url_disconnect'] = $this->url->link('extension/ovesio/module/ovesio.disconnect', $this->tokenQs());
         $data['url_list']       = $this->url->link('extension/ovesio/module/ovesio.activityList', $this->tokenQs());
-        $data['url_callback']   = HTTPS_CATALOG . 'index.php?route=extension/ovesio/module/ovesio.callback&hash=' . $data['hash'];
-        $data['url_cron']       = HTTPS_CATALOG . 'index.php?route=extension/ovesio/module/ovesio.cronjob&hash=' . $data['hash'];
+        $data['url_callback']   = $catalog_server . 'index.php?route=extension/ovesio/module/ovesio/callback&hash=' . $data['hash'];
+        $data['url_cron']       = $catalog_server . 'index.php?route=extension/ovesio/module/ovesio/cronjob&hash=' . $data['hash'];
 
         $client = $this->buildClient();
 
@@ -82,6 +89,8 @@ class Ovesio extends \Opencart\System\Engine\Controller
     public function install(): void
     {
         $this->load->model('setting/setting');
+        // $this->load->model('extension/ovesio/module/ovesio');
+        // Already fixed in previous steps but ensuring consistency if needed
         $this->load->model('extension/ovesio/module/ovesio');
 
         $this->model_extension_ovesio_module_ovesio->install();
@@ -108,8 +117,15 @@ class Ovesio extends \Opencart\System\Engine\Controller
             'admin/view/common/header/after'                               => 'extension/ovesio/module/ovesio.header_after',
         ];
 
-        foreach ($events as $key => $value) {
-            $model->addEvent($this->module_key, $key, $value);
+        foreach ($events as $trigger => $action) {
+            $model->addEvent([
+                'code'        => $this->module_key,
+                'description' => '',
+                'trigger'     => $trigger,
+                'action'      => $action,
+                'status'      => 1,
+                'sort_order'  => 0
+            ]);
         }
 
         $hash = md5(uniqid(rand(), true));
@@ -283,7 +299,11 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
     public function connect()
     {
-        $this->load->language('extension/module/ovesio');
+        if(empty($this->request->post)) {
+            return;
+        }
+
+        $this->load->language('extension/ovesio/module/ovesio');
 
         $this->load->model('setting/setting');
 
@@ -312,7 +332,9 @@ class Ovesio extends \Opencart\System\Engine\Controller
             $client = $this->buildClient($api_url, $api_token);
 
             try {
-                $this->load->library('ovesio');
+                // $this->load->library('ovesio');
+                require_once DIR_EXTENSION . 'ovesio/system/library/ovesio.php';
+                $this->registry->set('ovesio', new \Ovesio($this->registry));
 
                 $response = $client->languages()->list();
 
@@ -321,7 +343,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
                     'message'   => $this->language->get('text_connection_valid'),
                     'languages' => $response->data,
                 ];
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $json = [
                     'success' => false,
                     'message' => $e->getMessage(),
@@ -340,11 +362,15 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
     public function disconnect()
     {
-        $this->load->language('extension/module/ovesio');
+        $this->load->language('extension/ovesio/module/ovesio');
 
         $this->load->model('setting/setting');
 
-        $this->model_setting_setting->editSettingValue($this->module_key, $this->module_key . '_status', '');
+        // editSettingValue is not available in OC4, use editSetting
+        $settings = $this->model_setting_setting->getSetting($this->module_key);
+        $settings[$this->module_key . '_status'] = 0;
+
+        $this->model_setting_setting->editSetting($this->module_key, $settings);
 
         $json = [
             'success' => true,
@@ -356,7 +382,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
     public function generateContentCard($return)
     {
-        $data = $this->load->language('extension/module/ovesio');
+        $data = $this->load->language('extension/ovesio/module/ovesio');
 
         $data['generate_content_status']                  = $this->config->get($this->module_key . '_generate_content_status');
         $data['generate_content_for']                     = array_filter((array)$this->config->get($this->module_key . '_generate_content_for'));
@@ -846,11 +872,11 @@ class Ovesio extends \Opencart\System\Engine\Controller
      */
     public function activityList()
     {
-        $data = $this->load->language('extension/module/ovesio');
+        $data = $this->load->language('extension/ovesio/module/ovesio');
 
         $this->document->setTitle(strip_tags($this->language->get('text_activity_list')));
 
-        $this->load->model('extension/module/ovesio');
+        $this->load->model('extension/ovesio/module/ovesio');
 
         $page = isset($this->request->get['page']) ? (int)$this->request->get['page'] : 1;
         $page = max($page, 1);
@@ -878,8 +904,8 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
         $base_url .= "/account/$project"; // 'app/translate_requests
 
-        $activities = $this->model_extension_module_ovesio->getActivities($filters);
-        $activities_total = $this->model_extension_module_ovesio->getActivitiesTotal($filters);
+        $activities = $this->model_extension_ovesio_module_ovesio->getActivities($filters);
+        $activities_total = $this->model_extension_ovesio_module_ovesio->getActivitiesTotal($filters);
 
         $data = array_merge($data, $filters);
 
@@ -949,8 +975,8 @@ class Ovesio extends \Opencart\System\Engine\Controller
                 ['text' => ucfirst($activity['status']), 'class' => 'ov-status-secondary'];
 
             // Calculate time ago
-            $updated_time = new DateTime($activity['updated_at']);
-            $now = new DateTime();
+            $updated_time = new \DateTime($activity['updated_at']);
+            $now = new \DateTime();
             $diff = $now->diff($updated_time);
 
             if ($diff->days > 0) {
@@ -1003,19 +1029,20 @@ class Ovesio extends \Opencart\System\Engine\Controller
             $data['activities'][] = $activity;
         }
 
+        $catalog_server = defined('HTTPS_CATALOG') ? HTTPS_CATALOG : (defined('HTTP_CATALOG') ? HTTP_CATALOG : '');
         $hash = $this->config->get($this->module_key . '_hash');
-        $data['url_settings']      = $this->url->link('extension/module/ovesio', $this->tokenQs());
-        $data['url_update_status'] = HTTPS_CATALOG . 'index.php?route=extension/module/ovesio/callback/updateActivityStatus&hash=' . $hash;
+        $data['url_settings']      = $this->url->link('extension/ovesio/module/ovesio', $this->tokenQs());
+        $data['url_update_status'] = $catalog_server . 'index.php?route=extension/ovesio/module/ovesio/callback.updateActivityStatus&hash=' . $hash;
 
         $data['header']      = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer']      = $this->load->controller('common/footer');
 
         // Add URLs for AJAX modal calls
-        $data['url_view_request'] = $this->url->link('extension/module/ovesio/viewRequest', $this->tokenQs());
-        $data['url_view_response'] = $this->url->link('extension/module/ovesio/viewResponse', $this->tokenQs());
+        $data['url_view_request'] = $this->url->link('extension/ovesio/module/ovesio.viewRequest', $this->tokenQs());
+        $data['url_view_response'] = $this->url->link('extension/ovesio/module/ovesio.viewResponse', $this->tokenQs());
 
-        $this->response->setOutput($this->view('extension/module/ovesio_activity_list', $data));
+        $this->response->setOutput($this->view('extension/ovesio/module/ovesio_activity_list', $data));
     }
 
     /**
@@ -1023,9 +1050,9 @@ class Ovesio extends \Opencart\System\Engine\Controller
      */
     public function viewRequest()
     {
-        $this->load->model('extension/module/ovesio');
+        $this->load->model('extension/ovesio/module/ovesio');
 
-        $activity = $this->model_extension_module_ovesio->getActivity($this->request->get['activity_id']);
+        $activity = $this->model_extension_ovesio_module_ovesio->getActivity($this->request->get['activity_id']);
 
         if ($activity['request']) {
             $request = json_decode($activity['request'], true);
@@ -1041,11 +1068,11 @@ class Ovesio extends \Opencart\System\Engine\Controller
      */
     public function viewResponse()
     {
-        $this->load->language('extension/module/ovesio');
+        $this->load->language('extension/ovesio/module/ovesio');
 
-        $this->load->model('extension/module/ovesio');
+        $this->load->model('extension/ovesio/module/ovesio');
 
-        $activity = $this->model_extension_module_ovesio->getActivity($this->request->get['activity_id']);
+        $activity = $this->model_extension_ovesio_module_ovesio->getActivity($this->request->get['activity_id']);
 
         if ($activity['response']) {
             $response = json_decode($activity['response'], true);
@@ -1066,7 +1093,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
             try {
                 $response = $client->languages()->list();
                 $response = json_decode(json_encode($response), true);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return [];
             }
 
@@ -1093,7 +1120,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
         try {
             $response = $client->workflows()->list();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [];
         }
 

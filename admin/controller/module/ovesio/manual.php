@@ -4,7 +4,7 @@ class ControllerExtensionModuleOvesioManual extends Controller
 {
     public function index()
     {
-        $this->load->language('extension/module/ovesio');
+        $this->load->language('extension/ovesio/module/ovesio');
 
         if (empty($this->request->post['selected'])) {
             return $this->response->setOutput(json_encode([
@@ -92,11 +92,7 @@ class ControllerExtensionModuleOvesioManual extends Controller
 
     private function forceSettings()
     {
-        if (version_compare(VERSION, '3.0.0.0') >= 0) {
-            $module_key = 'module_ovesio';
-        } else {
-            $module_key = 'ovesio';
-        }
+        $module_key = 'ovesio';
 
         $this->config->set($module_key . '_generate_content_include_disabled', [
             'products'   => true,

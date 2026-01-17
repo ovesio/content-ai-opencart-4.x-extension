@@ -1,3 +1,5 @@
+<?php
+
 namespace Opencart\Catalog\Controller\Extension\Ovesio\Module\Ovesio;
 
 use Ovesio\QueueHandler;

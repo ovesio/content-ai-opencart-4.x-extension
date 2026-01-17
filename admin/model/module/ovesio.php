@@ -1,3 +1,5 @@
+<?php
+
 namespace Opencart\Admin\Model\Extension\Ovesio\Module;
 
 class Ovesio extends \Opencart\System\Engine\Model

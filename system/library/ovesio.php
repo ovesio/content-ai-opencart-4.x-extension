@@ -1,12 +1,13 @@
 <?php
 
-require_once(modification(DIR_SYSTEM . '../catalog/model/extension/module/ovesio.php'));
+
 require_once(__DIR__ . '/ovesio/sdk/autoload.php');
 
 use Ovesio\OvesioAI;
 use Ovesio\QueueHandler;
+use Opencart\System\Library\Log;
 
-class Ovesio extends Model
+class Ovesio extends \Opencart\System\Engine\Model
 {
     private $default_language_id;
     private $module_key = 'ovesio';
@@ -14,13 +15,6 @@ class Ovesio extends Model
     public function __construct($registry)
     {
         parent::__construct($registry);
-
-        /**
-         * Changes needed for OpenCart v3
-         */
-        if(version_compare(VERSION, '3.0.0.0') >= 0) {
-            $this->module_key = 'module_ovesio';
-        }
 
         $this->db->cache = false; //custom cache query disabled
 
@@ -33,7 +27,7 @@ class Ovesio extends Model
             $query = $this->db->query("SELECT language_id FROM " . DB_PREFIX . "language WHERE code LIKE '" . $this->db->escape($default_language) . "%' LIMIT 1");
 
             if (empty($query->row['language_id'])) {
-                throw new Exception("Could not detect local default language based on language code '$default_language'");
+                throw new \Exception("Could not detect local default language based on language code '$default_language'");
             }
 
             $default_language_id = $query->row['language_id'];
@@ -67,7 +61,7 @@ class Ovesio extends Model
         }
 
         // Add additional options
-        $options['server_url']          = defined('HTTPS_CATALOG') ? HTTPS_CATALOG : (defined('HTTPS_SERVER') ? HTTPS_SERVER : '');
+        $options['server_url']          = defined('HTTPS_CATALOG') ? HTTPS_CATALOG : (defined('HTTP_CATALOG') ? HTTP_CATALOG : (defined('HTTPS_SERVER') ? HTTPS_SERVER : (defined('HTTP_SERVER') ? HTTP_SERVER : '')));
         $options['default_language_id'] = $this->default_language_id;
         $options['manual']              = $manual;
 
@@ -76,7 +70,8 @@ class Ovesio extends Model
 
         $api = new OvesioAI($api_token, $api_url);
 
-        $model = new ModelExtensionModuleOvesio($this->registry);
+        $this->load->model('extension/ovesio/module/ovesio');
+        $model = $this->model_extension_ovesio_module_ovesio;
 
         return new QueueHandler(
             $model,

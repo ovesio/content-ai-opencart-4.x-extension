@@ -1,13 +1,13 @@
 {{ header }}{{ column_left }}
 <div id="content">
-  <link rel="stylesheet" type="text/css" href="view/stylesheet/ovesio.css" />
+
   <div class="container-fluid">
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="ov-reset">
           <!-- Top Bar -->
           <div class="ov-top-bar">
-            <div><img src="view/image/logo-ovesio-sm.png" style="height:25px; width: auto" alt="Ovesio Logo"></div>
+            <div><img src="{{ logo_url }}" style="height:25px; width: auto" alt="Ovesio Logo"></div>
             <div>
               {% if count_errors %}
               <a class="ov-badge ov-badge-danger" href="{{ url_list_errors }}" target="_blank">{{ text_errors }}: {{ count_errors }}</a>
@@ -141,8 +141,5 @@
   </div>
 </div>
 
-<!-- <script src="view/javascript/ovesio.js"></script> -->
-<!-- Script should be loaded via controller or use correct path for extension assets -->
-<!-- Assuming it's in the same directory structure, we might need to adjust this later -->
-<script src="extension/ovesio/admin/view/javascript/ovesio.js"></script>
+
 {{ footer }}

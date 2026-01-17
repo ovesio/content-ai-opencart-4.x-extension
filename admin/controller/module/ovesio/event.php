@@ -7,10 +7,6 @@ class ControllerExtensionModuleOvesioEvent extends Controller
     public function __construct($registry)
     {
         parent::__construct($registry);
-
-        if(version_compare(VERSION, '3.0.0.0') >= 0) {
-            $this->module_key = 'module_ovesio';
-        }
     }
 
     public function trigger($route, $data, $resource_id = null)
@@ -30,17 +26,18 @@ class ControllerExtensionModuleOvesioEvent extends Controller
             return;
         }
 
-        $this->load->model('extension/module/ovesio');
+        $this->load->model('extension/ovesio/module/ovesio');
+        $this->model_extension_ovesio_module_ovesio->addList($data);
 
         if ($resource == 'attribute') {
             $this->load->model('catalog/attribute');
 
-            $attribute_group_id = $this->model_extension_module_ovesio->getAttributeGroupId($resource_id);
+            $attribute_group_id = $this->model_extension_ovesio_module_ovesio->getAttributeGroupId($resource_id);
 
             $resource    = 'attribute_group';
             $resource_id = $attribute_group_id;
         }
 
-        $this->model_extension_module_ovesio->setStale($resource, $resource_id, 1);
+        $this->model_extension_ovesio_module_ovesio->setStale($resource, $resource_id, 1);
     }
 }

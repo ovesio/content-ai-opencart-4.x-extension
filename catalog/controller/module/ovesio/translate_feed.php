@@ -1,3 +1,5 @@
+<?php
+
 namespace Opencart\Catalog\Controller\Extension\Ovesio\Module\Ovesio;
 
 require_once(DIR_EXTENSION . 'ovesio/system/library/ovesio/sdk/autoload.php');
@@ -198,11 +200,7 @@ class TranslateFeed extends \Opencart\System\Engine\Controller
         }
     }
 
-        if (empty($push['content'])) {
-                $this->output['data'][] = $push;
-            }
-        }
-    }
+
 
     protected function option()
     {

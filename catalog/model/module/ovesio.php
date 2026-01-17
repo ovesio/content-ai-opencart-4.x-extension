@@ -1,9 +1,11 @@
 <?php
 
-class ModelExtensionModuleOvesio extends \Opencart\System\Engine\Model
+namespace Opencart\Catalog\Model\Extension\Ovesio\Module;
+
+class Ovesio extends \Opencart\System\Engine\Model
 {
     private $default_language_id;
-    private $module_key = 'ovesio';
+    private $module_key = 'module_ovesio';
 
     public function __construct($registry)
     {
@@ -18,7 +20,7 @@ class ModelExtensionModuleOvesio extends \Opencart\System\Engine\Model
             $query = $this->db->query("SELECT language_id FROM " . DB_PREFIX . "language WHERE code LIKE '" . $this->db->escape($default_language) . "%' LIMIT 1");
 
             if (!$query->row) {
-                throw new Exception("Could not detect local default language based on language code '$default_language'");
+                throw new \Exception("Could not detect local default language based on language code '$default_language'");
             }
 
             $default_language_id = $query->row['language_id'];

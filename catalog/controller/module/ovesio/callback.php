@@ -1,3 +1,5 @@
+<?php
+
 namespace Opencart\Catalog\Controller\Extension\Ovesio\Module\Ovesio;
 
 use Ovesio\OvesioAI;
@@ -31,6 +33,11 @@ class Callback extends \Opencart\System\Engine\Controller
         // Takes raw data from the request
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
+
+        if (empty($data)) {
+            $data = [];
+        }
+
         $data = $this->request->clean($data);
 
         try {
