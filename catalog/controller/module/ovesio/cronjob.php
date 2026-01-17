@@ -53,8 +53,13 @@ class Cronjob extends \Opencart\System\Engine\Controller
         // We need to ensure library is loaded.
 
         // Let's assume queue handler building is same.
-        $this->load->library('extension/ovesio/ovesio');
-        $queue_handler = $this->ovesio->buildQueueHandler();
+        // $this->load->library('extension/ovesio/ovesio');
+        // $queue_handler = $this->ovesio->buildQueueHandler();
+
+        // Manual instantiation to avoid loader issues in OC4
+        require_once(DIR_EXTENSION . 'ovesio/system/library/ovesio.php');
+        $ovesio = new \Ovesio($this->registry);
+        $queue_handler = $ovesio->buildQueueHandler();
 
         $list = $queue_handler->processQueue([
             'resource_type' => $resource_type,
