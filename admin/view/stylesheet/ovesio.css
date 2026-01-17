@@ -2558,3 +2558,9 @@ select.ov-form-control-lg {
     opacity: 0.3;
   }
 }
+
+/* Fix cursor for readonly inputs in cron section */
+.ov-cron-section input[readonly] {
+  cursor: text !important;
+  background-color: #fff !important; /* Optional: make it look like normal input */
+}
