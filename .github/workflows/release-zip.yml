@@ -1,0 +1,35 @@
+name: build-plugin-zip
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build ocmod zip
+        run: |
+          PLUGIN=ovesio
+          BUILD_DIR="$(mktemp -d)"
+
+          rsync -a ./ "$BUILD_DIR"/ \
+            --exclude '.git*' \
+            --exclude '.github' \
+            --exclude '.gitignore' \
+            --exclude "$PLUGIN.ocmod.zip"
+
+          (cd "$BUILD_DIR" && zip -r "$GITHUB_WORKSPACE/$PLUGIN.ocmod.zip" .)
+
+      - name: Upload asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "ovesio.ocmod.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

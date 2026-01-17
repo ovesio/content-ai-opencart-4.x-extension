@@ -1,0 +1,66 @@
+<div class="ov-card ov-card-fixed" id="generate_content_card" style="flex: 1">
+  <div class="ov-card-body ov-card-body-relative">
+    <h4 class="ov-card-title ov-text-xl">{{ text_content_generator }}</h4>
+    <div class="ov-status-container">
+      {% if generate_content_status %}
+      <span class="ov-badge ov-badge-success">{{ text_enabled }}</span>
+      {% else %}
+      <span class="ov-badge ov-badge-danger">{{ text_disabled }}</span>
+      {% endif %}
+    </div>
+
+    <ul class="ov-bullet-list">
+      <li class="ov-bullet-item">
+        <span class="ov-bullet ov-bullet-red" style="align-self: start; margin-top: 8px;"></span>
+        <div>
+          {% if generate_content_for %}
+            Generating content for:<br>
+            {% for resource, value in generate_content_for %}
+              <small class="ov-text-sm ov-text-muted">- {{ generate_content_sumary[resource] }}</small><br>
+            {% endfor %}
+          {% else %}
+          <span class="ov-text-danger">No resources targeted</span>
+          {% endif %}
+        </div>
+      </li>
+
+      {% if generate_content_for['product'] %}
+      <li class="ov-bullet-item">
+        <span class="ov-bullet ov-bullet-blue"></span>
+        {% if generate_content_include_stock_0 %}
+          Including out of stock products
+        {% else %}
+          Excluding out of stock products
+        {% endif %}
+      </li>
+      {% endif %}
+
+      {% if generate_content_for %}
+      <li class="ov-bullet-item">
+        <span class="ov-bullet ov-bullet-green"></span>
+        {% if generate_content_live_update %}
+          Live content generation on resource update
+        {% else %}
+          One time content generation
+        {% endif %}
+      </li>
+      {% endif %}
+
+      {% if generate_content_workflow %}
+      <li class="ov-bullet-item">
+        <span class="ov-bullet ov-bullet-orange"></span>
+        <b>Workflow:</b>&nbsp;{{ generate_content_workflow['name'] }}
+      </li>
+      {% endif %}
+    </ul>
+
+    <div class="ov-card-bottom">
+      <div class="ov-feedback-container"></div>
+
+      <div class="ov-edit-button">
+        <a href="javascript:;" class="ov-btn ov-btn-outline-primary" onclick="ovesio.modalButton(event)" data-title="AI Content Generator Settings" data-url="{{ url_edit }}">Edit</a>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,250 @@
+<form action="{{ action }}" method="post" enctype="multipart/form-data" id="translate_form" onsubmit="ovesio.translateFormSave(event)">
+  <div class="ov-reset">
+    <fieldset class="ov-fieldset">
+      <!-- Status Switch -->
+      <div class="ov-form-group">
+        <label class="ov-form-label">{{ entry_status }}:</label>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label class="ov-form-switch">
+            <input name="translate_status" value="" type="hidden">
+            {% if translate_status %}
+            <input name="translate_status" type="checkbox" id="translation_status" value="1" checked>
+            {% else %}
+            <input name="translate_status" type="checkbox" id="translation_status" value="1">
+            {% endif %}
+            <span class="ov-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Workflow -->
+      <div class="ov-form-group">
+        <label class="ov-form-label">{{ text_workflow_used }}</label>
+        <div class="ov-form-field">
+          <select name="translate_workflow" class="ov-form-control">
+            {% for workflow in workflows_list %}
+            {% if translate_workflow and workflow.id == translate_workflow.id %}
+            <option value="{{ workflow.id }}@{{ workflow.name }}" selected>{{ workflow.name }}</option>
+            {% else %}
+            <option value="{{ workflow.id }}@{{ workflow.name }}">{{ workflow.name }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Products -->
+    <fieldset class="ov-fieldset">
+      <legend class="ov-d-flex" style="gap: 10px;">
+        {{ text_products }}
+
+        <label class="ov-form-switch">
+          <input name="translate_for[products]" value="" type="hidden">
+          {% if translate_for['products'] %}
+          <input name="translate_for[products]" type="checkbox" value="1" checked>
+          {% else %}
+          <input name="translate_for[products]" type="checkbox" value="1">
+          {% endif %}
+          <span class="ov-switch-slider"></span>
+        </label>
+      </legend>
+
+      <div class="ov-form-group">
+        <label class="ov-form-label">{{ text_include_disabled_resources|format(text_products|lower) }}</label>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label class="ov-form-switch">
+            <input name="translate_include_disabled[products]" value="" type="hidden">
+            {% if translate_include_disabled['products'] %}
+            <input name="translate_include_disabled[products]" value="1" type="checkbox" checked>
+            {% else %}
+            <input name="translate_include_disabled[products]" value="1" type="checkbox">
+            {% endif %}
+            <span class="ov-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ov-form-group">
+        <label class="ov-form-label">{{ text_include_stock_0 }}</label>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label class="ov-form-switch">
+            <input name="translate_include_stock_0" value="" type="hidden">
+            {% if translate_include_stock_0 %}
+            <input name="translate_include_stock_0" value="1" type="checkbox" id="translation_include_out_of_stock" checked>
+            {% else %}
+            <input name="translate_include_stock_0" value="1" type="checkbox" id="translation_include_out_of_stock">
+            {% endif %}
+            <span class="ov-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ov-form-group ov-form-group-vertical">
+        <label class="ov-form-label">{{ text_translated_fields }}:</label>
+        <div class="ov-form-field">
+          <div class="ov-well">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              {% for field_key, field_label in translate_fields_schema['products'] %}
+              <label class="ov-checkbox-label">
+                <input name="translate_fields[products][{{ field_key }}]" value="" type="hidden">
+                {% if translate_fields['products'][field_key] %}
+                <input name="translate_fields[products][{{ field_key }}]" value="1" type="checkbox" checked>
+                {% else %}
+                <input name="translate_fields[products][{{ field_key }}]" value="1" type="checkbox">
+                {% endif %}
+                <span>{{ field_label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Categories -->
+    <fieldset class="ov-fieldset">
+      <legend class="ov-d-flex" style="gap: 10px;">
+        {{ text_categories }}
+
+        <label class="ov-form-switch">
+          <input name="translate_for[categories]" value="" type="hidden">
+          {% if translate_for['categories'] %}
+          <input name="translate_for[categories]" type="checkbox" value="1" checked>
+          {% else %}
+          <input name="translate_for[categories]" type="checkbox" value="1">
+          {% endif %}
+          <span class="ov-switch-slider"></span>
+        </label>
+      </legend>
+
+      <div class="ov-form-group">
+        <label class="ov-form-label">{{ text_include_disabled_resources|format(text_categories|lower) }}</label>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label class="ov-form-switch">
+            <input name="translate_include_disabled[categories]" value="" type="hidden">
+            {% if translate_include_disabled['categories'] %}
+            <input name="translate_include_disabled[categories]" value="1" type="checkbox" checked>
+            {% else %}
+            <input name="translate_include_disabled[categories]" value="1" type="checkbox">
+            {% endif %}
+            <span class="ov-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ov-form-group ov-form-group-vertical">
+        <label class="ov-form-label">{{ text_translated_fields }}:</label>
+        <div class="ov-form-field">
+          <div class="ov-well">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              {% for field_key, field_label in translate_fields_schema['categories'] %}
+              <label class="ov-checkbox-label">
+                <input name="translate_fields[categories][{{ field_key }}]" value="" type="hidden">
+                {% if translate_fields['categories'][field_key] %}
+                <input name="translate_fields[categories][{{ field_key }}]" value="1" type="checkbox" checked>
+                {% else %}
+                <input name="translate_fields[categories][{{ field_key }}]" value="1" type="checkbox">
+                {% endif %}
+                <span>{{ field_label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Attributes -->
+    <fieldset class="ov-fieldset">
+      <legend class="ov-d-flex" style="gap: 10px;">
+        {{ text_attributes }}
+
+        <label class="ov-form-switch">
+          <input name="translate_for[attributes]" value="" type="hidden">
+          {% if translate_for['attributes'] %}
+          <input name="translate_for[attributes]" type="checkbox" value="1" checked>
+          {% else %}
+          <input name="translate_for[attributes]" type="checkbox" value="1">
+          {% endif %}
+          <span class="ov-switch-slider"></span>
+        </label>
+      </legend>
+    </fieldset>
+
+    <!-- Options -->
+    <fieldset class="ov-fieldset">
+      <legend class="ov-d-flex" style="gap: 10px;">
+        {{ text_options }}
+
+        <label class="ov-form-switch">
+          <input name="translate_for[options]" value="" type="hidden">
+          {% if translate_for['options'] %}
+          <input name="translate_for[options]" type="checkbox" value="1" checked>
+          {% else %}
+          <input name="translate_for[options]" type="checkbox" value="1">
+          {% endif %}
+          <span class="ov-switch-slider"></span>
+        </label>
+      </legend>
+    </fieldset>
+
+    <!-- Language Translation Table -->
+    <fieldset class="ov-fieldset">
+      <legend>{{ text_language_translation }}</legend>
+      <table class="ov-table">
+          <thead class="ov-table-header">
+            <tr>
+              <th>{{ text_system_language }}</th>
+              <th>{{ text_ovesio_language }}</th>
+              <th>{{ text_status }}</th>
+              <th>{{ text_translate_from }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for language_id, language in system_languages %}
+            <tr>
+              <td>{{ language.name }}</td>
+              <td>
+                <select name="language_settings[{{ language_id }}][code]" class="ov-form-control">
+                  <option disabled>{{ text_please_select_matching_language }}</option>
+                  {% for code, ov_lang in ovesio_languages %}
+                  {% if language_settings[language_id].code == code %}
+                  <option value="{{ code }}" selected>{{ ov_lang.name }}</option>
+                  {% else %}
+                  <option value="{{ code }}">{{ ov_lang.name }}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
+                <label class="ov-form-switch" style="margin-bottom: 0;">
+                  <input name="language_settings[{{ language_id }}][translate]" value="" type="hidden">
+                  {% if language_settings[language_id].translate %}
+                  <input name="language_settings[{{ language_id }}][translate]" value="1" type="checkbox" checked>
+                  {% else %}
+                  <input name="language_settings[{{ language_id }}][translate]" value="1" type="checkbox">
+                  {% endif %}
+                  <span class="ov-switch-slider"></span>
+                </label>
+              </td>
+              <td>
+                <select name="language_settings[{{ language_id }}][translate_from]" class="ov-form-control">
+                  <option value="" disabled>{{ text_select_source_language }}</option>
+                  <option value="auto">Auto</option>
+                  {% for code, ov_lang in ovesio_languages %}
+                  {% if language_settings[language_id].translate_from == code %}
+                  <option value="{{ code }}" selected>{{ ov_lang.name }}</option>
+                  {% else %}
+                  <option value="{{ code }}">{{ ov_lang.name }}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </fieldset>
+  </div>
+</form>
