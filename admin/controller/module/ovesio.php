@@ -226,8 +226,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
                 $resource = $ovesio_route_resource[$current_route];
                 $token_qs = 'user_token=' . $this->session->data['user_token'];
 
-                $this->load->language('extension/ovesio/module/ovesio', 'ovesio');
-                $language = $this->language->get('ovesio');
+                $this->load->language('extension/ovesio/module/ovesio');
 
                 $ovesio_status                  = $this->config->get('module_ovesio_status');
                 $ovesio_generate_content_status = $this->config->get('module_ovesio_generate_content_status');
@@ -246,9 +245,9 @@ class Ovesio extends \Opencart\System\Engine\Controller
                 ];
 
                 $config['text'] = [
-                    'content'   => $language->get('text_generate_content_with_ovesio'),
-                    'seo'       => $language->get('text_generate_seo_with_ovesio'),
-                    'translate' => $language->get('text_translate_with_ovesio'),
+                    'content'   => $this->language->get('text_generate_content_with_ovesio'),
+                    'seo'       => $this->language->get('text_generate_seo_with_ovesio'),
+                    'translate' => $this->language->get('text_translate_with_ovesio'),
                 ];
 
                 // Inject script and config
