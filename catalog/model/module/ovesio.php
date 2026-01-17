@@ -338,7 +338,11 @@ class Ovesio extends \Opencart\System\Engine\Model
     {
         $fields = [];
         foreach ($data as $key => $value) {
-            $fields[] = "`" . $key . "` = '" . $this->db->escape($value) . "'";
+            if ($value === null) {
+                $fields[] = "`" . $key . "` = ''";
+            } else {
+                $fields[] = "`" . $key . "` = '" . $this->db->escape($value) . "'";
+            }
         }
 
         $fields_sql = implode(', ', $fields);

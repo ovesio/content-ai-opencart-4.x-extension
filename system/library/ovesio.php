@@ -10,7 +10,7 @@ use Opencart\System\Library\Log;
 class Ovesio extends \Opencart\System\Engine\Model
 {
     private $default_language_id;
-    private $module_key = 'ovesio';
+    private $module_key = 'module_ovesio';
 
     public function __construct($registry)
     {

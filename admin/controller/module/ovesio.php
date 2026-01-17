@@ -1010,17 +1010,17 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
             // resource url
             if ($activity['resource_type'] == 'product') {
-                $activity['resource_url'] = $this->url->link('catalog/product/edit', $this->tokenQs() . '&product_id=' . $activity['resource_id']);
+                $activity['resource_url'] = $this->url->link('catalog/product|form', $this->tokenQs() . '&product_id=' . $activity['resource_id']);
             } elseif ($activity['resource_type'] == 'category') {
-                $activity['resource_url'] = $this->url->link('catalog/category/edit', $this->tokenQs() . '&category_id=' . $activity['resource_id']);
+                $activity['resource_url'] = $this->url->link('catalog/category|form', $this->tokenQs() . '&category_id=' . $activity['resource_id']);
             } elseif ($activity['resource_type'] == 'attribute_group') {
-                $activity['resource_url'] = $this->url->link('catalog/attribute_group/edit', $this->tokenQs() . '&attribute_group_id=' . $activity['resource_id']);
+                $activity['resource_url'] = $this->url->link('catalog/attribute_group|form', $this->tokenQs() . '&attribute_group_id=' . $activity['resource_id']);
             } elseif ($activity['resource_type'] == 'attribute') {
-                $activity['resource_url'] = $this->url->link('catalog/attribute/edit', $this->tokenQs() . '&attribute_id=' . $activity['resource_id']);
+                $activity['resource_url'] = $this->url->link('catalog/attribute|form', $this->tokenQs() . '&attribute_id=' . $activity['resource_id']);
             } elseif ($activity['resource_type'] == 'option') {
-                $activity['resource_url'] = $this->url->link('catalog/option/edit', $this->tokenQs() . '&option_id=' . $activity['resource_id']);
+                $activity['resource_url'] = $this->url->link('catalog/option|form', $this->tokenQs() . '&option_id=' . $activity['resource_id']);
             } elseif ($activity['resource_type'] == 'information') {
-                $activity['resource_url'] = $this->url->link('catalog/information/edit', $this->tokenQs() . '&information_id=' . $activity['resource_id']);
+                $activity['resource_url'] = $this->url->link('catalog/information|form', $this->tokenQs() . '&information_id=' . $activity['resource_id']);
             } else {
                 $activity['resource_url'] = '';
             }

@@ -433,7 +433,7 @@ class Callback extends \Opencart\System\Engine\Controller
             return $this->setOutput(['error' => 'Invalid Hash!']);
         }
 
-        $this->load->language('extension/ovesio/module/ovesio');
+        $this->load->language('extension/module/ovesio');
 
         $activity_id = $this->request->post['activity_id'];
 

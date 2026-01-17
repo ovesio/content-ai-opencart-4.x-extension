@@ -2,7 +2,7 @@
 
 class ControllerExtensionModuleOvesioEvent extends Controller
 {
-    private $module_key = 'ovesio';
+    private $module_key = 'module_ovesio';
 
     public function __construct($registry)
     {
