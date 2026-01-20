@@ -1,4 +1,4 @@
-# Ovesio AI module for OpenCart
+# Ovesio Content AI extension for OpenCart
 
 ## License and Disclaimer
 This package is released under the **MIT License**.
@@ -9,7 +9,7 @@ For production-ready integrations, we highly recommend using our official API en
 ---
 
 ## Overview
-The Ovesio AI module integrates OpenCart with [Ovesio.com](https://ovesio.com), enabling AI-powered translations and automatic content generation (descriptions and SEO meta tags) for your e-commerce store.
+The Ovesio Content AI extension integrates OpenCart with [Ovesio.com](https://ovesio.com), enabling AI-powered translations and automatic content generation (descriptions and SEO meta tags) for your e-commerce store.
 
 ---
 
