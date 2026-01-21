@@ -15,7 +15,10 @@ class ControllerExtensionModuleOvesioManual extends Controller
 
         $this->forceSettings();
 
-        $this->load->library('ovesio');
+        require_once(DIR_EXTENSION . 'ovesio/system/library/ovesio.php');
+        if (!$this->registry->has('ovesio')) {
+            $this->registry->set('ovesio', new \Ovesio($this->registry));
+        }
 
         $ovesio_route_resource_type = [
             'catalog/product'         => 'product',

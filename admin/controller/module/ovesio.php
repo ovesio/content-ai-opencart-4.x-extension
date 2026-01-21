@@ -264,7 +264,7 @@ class Ovesio extends \Opencart\System\Engine\Controller
     public function column_left_before(string &$route, array &$data, mixed &$output): void
     {
         if ($this->user->hasPermission('access', 'extension/ovesio/module/ovesio')) {
-            $name = 'Ovesio AI';
+            $name = 'Ovesio - Content AI';
 
             $this->load->model('extension/ovesio/module/ovesio');
             // Assuming model has been loaded as model_extension_ovesio_module_ovesio

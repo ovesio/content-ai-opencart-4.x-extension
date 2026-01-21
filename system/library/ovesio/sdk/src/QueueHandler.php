@@ -228,10 +228,13 @@ class QueueHandler
                         'resource_id'   => $resource_id,
                         'lang'          => $lang,
                         'activity_type' => $activity_type,
-                        'request'       => $request ? json_encode($request) : null,
                         'stale'         => 0,
                         'updated_at'    => date('Y-m-d H:i:s')
                     ];
+
+                    if($request) {
+                        $list_item['request'] = json_encode($request);
+                    }
 
                     if ($message) {
                         $list_item['message'] = $message;
@@ -255,10 +258,13 @@ class QueueHandler
                     'resource_id'   => $resource_id,
                     'lang'          => $default_language,
                     'activity_type' => $activity_type,
-                    'request'       => $request ? json_encode($request) : null,
                     'stale'         => 0,
                     'updated_at'    => date('Y-m-d H:i:s')
                 ];
+
+                if($request) {
+                    $list_item['request'] = json_encode($request);
+                }
 
                 if ($message) {
                     $list_item['message'] = $message;
@@ -317,7 +323,7 @@ class QueueHandler
         $hash         = $this->getOption('hash');
         $server       = $this->getOption('server_url', '');
         $workflow     = $this->getOption('generate_content_workflow');
-        $callback_url = $server . 'index.php?route=extension/module/ovesio/callback&type=generate_content&hash=' . $hash;
+        $callback_url = $server . 'index.php?route=extension/ovesio/module/ovesio/callback&type=generate_content&hash=' . $hash;
         if ($this->getOption('manual')) {
             $callback_url .= '&manual=true';
         }
@@ -599,7 +605,7 @@ class QueueHandler
         $hash         = $this->getOption('hash');
         $server       = $this->getOption('server_url', '');
         $workflow     = $this->getOption('generate_seo_workflow');
-        $callback_url = $server . 'index.php?route=extension/module/ovesio/callback&type=generate_seo&hash=' . $hash;
+        $callback_url = $server . 'index.php?route=extension/ovesio/module/ovesio/callback&type=generate_seo&hash=' . $hash;
         if ($this->getOption('manual')) {
             $callback_url .= '&manual=true';
         }
@@ -869,7 +875,7 @@ class QueueHandler
         $hash         = $this->getOption('hash');
         $server       = $this->getOption('server_url', '');
         $workflow     = $this->getOption('translate_workflow');
-        $callback_url = $server . 'index.php?route=extension/module/ovesio/callback&type=translate&hash=' . $hash;
+        $callback_url = $server . 'index.php?route=extension/ovesio/module/ovesio/callback&type=translate&hash=' . $hash;
         if ($this->getOption('manual')) {
             $callback_url .= '&manual=true';
         }
@@ -1342,7 +1348,7 @@ class QueueHandler
     // {
     //     // make a curl POST to self server, without SSL verification
     //     $server = $this->getOption('server_url', '');
-    //     $url = $server . 'index.php?route=extension/module/ovesio/callback&type=' . $type . '&hash=' . $this->getOption('hash');
+    //     $url = $server . 'index.php?route=extension/ovesio/module/ovesio/callback&type=' . $type . '&hash=' . $this->getOption('hash');
 
     //     $ch = curl_init($url);
 

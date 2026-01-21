@@ -1,4 +1,4 @@
-# Ovesio Content AI extension for OpenCart
+# Ovesio - Content AI Extension for OpenCart
 
 ## License and Disclaimer
 This package is released under the **MIT License**.
@@ -9,7 +9,7 @@ For production-ready integrations, we highly recommend using our official API en
 ---
 
 ## Overview
-The Ovesio Content AI extension integrates OpenCart with [Ovesio.com](https://ovesio.com), enabling AI-powered translations and automatic content generation (descriptions and SEO meta tags) for your e-commerce store.
+The Ovesio - Content AI extension integrates OpenCart with [Ovesio.com](https://ovesio.com), enabling AI-powered translations and automatic content generation (descriptions and SEO meta tags) for your e-commerce store.
 
 ---
 
@@ -44,7 +44,7 @@ The Ovesio Content AI extension integrates OpenCart with [Ovesio.com](https://ov
 - Descriptions are also performed **in the background**, not instantly
 
 ### SEO Meta Tag Generation
-- Fully automated generation of SEO **meta titles**, **meta descriptions**, and **meta keywords** using Ovesio AI
+- Fully automated generation of SEO **meta titles**, **meta descriptions**, and **meta keywords** using Ovesio - Content AI
 - Configurable from the **AI SEO MetaTags Generator** tab
 - Available for both **products** and **categories**
 - SEO meta tag generation supports:
@@ -89,7 +89,7 @@ Always backup your site files and database before installing new extensions.
 3. Upload the extension file and install it.
 4. Navigate to **Extensions > Extensions**.
 5. Select **Modules** from the dropdown.
-6. Find `Ovesio AI` and click the **Install** button (green +).
+6. Find `Ovesio - Content AI` and click the **Install** button (green +).
 7. Click the **Edit** button (blue pencil) to configure the module.
 
 ### Step 3: Configure the Module

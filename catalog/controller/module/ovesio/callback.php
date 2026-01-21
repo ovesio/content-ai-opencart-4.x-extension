@@ -92,7 +92,10 @@ class Callback extends \Opencart\System\Engine\Controller
             throw new \Exception('Identifier cannot be empty');
         }
 
-        $this->load->library('extension/ovesio/ovesio');
+        require_once(DIR_EXTENSION . 'ovesio/system/library/ovesio.php');
+        if (!$this->registry->has('ovesio')) {
+            $this->registry->set('ovesio', new \Ovesio($this->registry));
+        }
 
         $language_id  = $this->ovesio->getDefaultLanguageId();
         $language_settings = $this->config->get($this->module_key . '_language_settings');
@@ -433,7 +436,7 @@ class Callback extends \Opencart\System\Engine\Controller
             return $this->setOutput(['error' => 'Invalid Hash!']);
         }
 
-        $this->load->language('extension/module/ovesio');
+        $this->load->language('extension/ovesio/module/ovesio');
 
         $activity_id = $this->request->post['activity_id'];
 
