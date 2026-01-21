@@ -1,4 +1,4 @@
-# Ovesio - Content AI Extension for OpenCart
+# Ovesio - Content AI Extension for OpenCart 4.x
 
 ## License and Disclaimer
 This package is released under the **MIT License**.
