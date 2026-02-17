@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof ovesioConfig !== 'undefined') {
-        const targetContainer = document.querySelector('.float-end');
+        const targetContainer = document.querySelector('.page-header .float-end');
         if (targetContainer) {
             // Helper to create button
             const createButton = (type, color) => {

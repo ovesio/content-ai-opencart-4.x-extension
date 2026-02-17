@@ -2,10 +2,13 @@
 
 
 require_once(__DIR__ . '/ovesio/sdk/autoload.php');
+require_once(__DIR__ . '/../../catalog/model/module/ovesio.php');
+
 
 use Ovesio\OvesioAI;
 use Ovesio\QueueHandler;
 use Opencart\System\Library\Log;
+use Opencart\Catalog\Model\Extension\Ovesio\Module\Ovesio as ModelExtensionModuleOvesio;
 
 class Ovesio extends \Opencart\System\Engine\Model
 {
@@ -70,8 +73,7 @@ class Ovesio extends \Opencart\System\Engine\Model
 
         $api = new OvesioAI($api_token, $api_url);
 
-        $this->load->model('extension/ovesio/module/ovesio');
-        $model = $this->model_extension_ovesio_module_ovesio;
+        $model = new ModelExtensionModuleOvesio($this->registry);
 
         return new QueueHandler(
             $model,

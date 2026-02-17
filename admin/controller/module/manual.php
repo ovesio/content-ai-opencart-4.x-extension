@@ -1,6 +1,8 @@
 <?php
 
-class ControllerExtensionModuleOvesioManual extends Controller
+namespace Opencart\Admin\Controller\Extension\Ovesio\Module;
+
+class Manual extends \Opencart\System\Engine\Controller
 {
     public function index()
     {

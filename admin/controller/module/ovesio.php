@@ -7,7 +7,7 @@ use Ovesio\OvesioAI;
  * Name: Ovesio
  * Url: https://ovesio.com/
  * Author: Aweb Design SRL
- * Version: 2.4.0
+ * Version: 2.4.1
  */
 
 // require_once(DIR_EXTENSION . 'ovesio/system/library/ovesio/sdk/autoload.php');
@@ -95,6 +95,12 @@ class Ovesio extends \Opencart\System\Engine\Controller
 
         $this->model_extension_ovesio_module_ovesio->install();
 
+        $this->load->model('user/user_group');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/ovesio/module/ovesio');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/ovesio/module/ovesio');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/ovesio/module/manual');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/ovesio/module/manual');
+
         $this->load->model($this->event_model);
         $model_name = 'model_' . str_replace('/', '_', $this->event_model);
         /** @var \Opencart\Admin\Model\Setting\Event $model */
@@ -103,24 +109,24 @@ class Ovesio extends \Opencart\System\Engine\Controller
         $model->deleteEventByCode($this->module_key);
 
         $events = [
-            'admin/model/catalog/category/addCategory/after'               => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/category/editCategory/after'              => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/product/addProduct/after'                 => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/product/editProduct/after'                => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/attribute/addAttribute/after'             => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/attribute/editAttribute/after'            => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/attribute_group/addAttributeGroup/after'  => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/attribute_group/editAttributeGroup/after' => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/option/addOption/after'                   => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/model/catalog/option/editOption/after'                  => 'extension/ovesio/module/ovesio.eventTrigger',
-            'admin/view/common/column_left/before'                         => 'extension/ovesio/module/ovesio.column_left_before',
-            'admin/view/common/header/after'                               => 'extension/ovesio/module/ovesio.header_after',
+            'admin/model/catalog/category.addCategory/after'               => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/category.editCategory/after'              => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/product.addProduct/after'                 => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/product.editProduct/after'                => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/attribute.addAttribute/after'             => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/attribute.editAttribute/after'            => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/attribute_group.addAttributeGroup/after'  => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/attribute_group.editAttributeGroup/after' => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/option.addOption/after'                   => 'extension/ovesio/module/event.trigger',
+            'admin/model/catalog/option.editOption/after'                  => 'extension/ovesio/module/event.trigger',
+            'admin/view/common/column_left/before'                         => 'extension/ovesio/module/event.column_left_before',
+            'admin/view/common/header/after'                               => 'extension/ovesio/module/event.header_after',
         ];
 
         foreach ($events as $trigger => $action) {
             $model->addEvent([
                 'code'        => $this->module_key,
-                'description' => '',
+                'description' => 'Ovesio Trigger',
                 'trigger'     => $trigger,
                 'action'      => $action,
                 'status'      => 1,
@@ -209,79 +215,14 @@ class Ovesio extends \Opencart\System\Engine\Controller
         $this->model_setting_setting->editSetting($this->module_key, $settings);
     }
 
-    public function header_after(string &$route, array &$data, mixed &$output): void
+    public function uninstall(): void
     {
-        if (isset($this->request->get['route'])) {
-            $current_route = $this->request->get['route'];
+        $this->load->model($this->event_model);
+        $model_name = 'model_' . str_replace('/', '_', $this->event_model);
+        /** @var \Opencart\Admin\Model\Setting\Event $model */
+        $model =  $this->$model_name;
 
-            $ovesio_route_resource = [
-                'catalog/product'         => 'products',
-                'catalog/category'        => 'categories',
-                'catalog/attribute_group' => 'attributes',
-                'catalog/attribute'       => 'attributes',
-                'catalog/option'          => 'options',
-            ];
-
-            if (isset($ovesio_route_resource[$current_route])) {
-                $resource = $ovesio_route_resource[$current_route];
-                $token_qs = 'user_token=' . $this->session->data['user_token'];
-
-                $this->load->language('extension/ovesio/module/ovesio');
-
-                $ovesio_status                  = $this->config->get('module_ovesio_status');
-                $ovesio_generate_content_status = $this->config->get('module_ovesio_generate_content_status');
-                $ovesio_generate_seo_status     = $this->config->get('module_ovesio_generate_seo_status');
-                $ovesio_translate_status        = $this->config->get('module_ovesio_translate_status');
-
-                $config = [];
-                $config['resource'] = $resource;
-                $config['route'] = $current_route;
-                $config['manualUrl'] = $this->url->link('extension/ovesio/module/ovesio.manual', 'from=' . $current_route . '&' . $token_qs, true);
-
-                $config['status'] = [
-                    'content'   => $ovesio_status && $ovesio_generate_content_status && in_array($resource, ['products', 'categories']),
-                    'seo'       => $ovesio_status && $ovesio_generate_seo_status && in_array($resource, ['products', 'categories']),
-                    'translate' => $ovesio_status && $ovesio_translate_status,
-                ];
-
-                $config['text'] = [
-                    'content'   => $this->language->get('text_generate_content_with_ovesio'),
-                    'seo'       => $this->language->get('text_generate_seo_with_ovesio'),
-                    'translate' => $this->language->get('text_translate_with_ovesio'),
-                ];
-
-                // Inject script and config
-                $script_inject = '<link href="../extension/ovesio/admin/view/stylesheet/ovesio.css" type="text/css" rel="stylesheet" media="screen" />';
-                $script_inject .= '<script>var ovesioConfig = ' . json_encode($config) . ';</script>';
-                $script_inject .= '<script src="../extension/ovesio/admin/view/javascript/ovesio.js" type="text/javascript"></script>';
-                $script_inject .= '<script src="../extension/ovesio/admin/view/javascript/ovesio_inject.js" type="text/javascript"></script>';
-
-                $output = str_replace('</head>', $script_inject . "\n</head>", $output);
-            }
-        }
-    }
-
-    public function column_left_before(string &$route, array &$data, mixed &$output): void
-    {
-        if ($this->user->hasPermission('access', 'extension/ovesio/module/ovesio')) {
-            $name = 'Ovesio - Content AI';
-
-            $this->load->model('extension/ovesio/module/ovesio');
-            // Assuming model has been loaded as model_extension_ovesio_module_ovesio
-            $count_errors = $this->model_extension_ovesio_module_ovesio->getActivitiesTotal(['status' => 'error']);
-            // $count_errors = 1; // Debug line removed
-            if ($count_errors) {
-                $name .= ' <span class="badge badge-danger pull-right">' . $count_errors . '</span>';
-            }
-
-            $data['menus'][] = [
-                'id'       => 'menu-ovesio-list',
-                'icon'     => 'fa-android',
-                'name'     => $name,
-                'href'     => $this->url->link('extension/ovesio/module/ovesio.activityList', $this->tokenQs()),
-                'children' => [],
-            ];
-        }
+        $model->deleteEventByCode($this->module_key);
     }
 
     /**
