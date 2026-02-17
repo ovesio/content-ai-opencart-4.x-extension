@@ -7,7 +7,7 @@ use Ovesio\OvesioAI;
  * Name: Ovesio
  * Url: https://ovesio.com/
  * Author: Aweb Design SRL
- * Version: 2.4.1
+ * Version: 1.2.0
  */
 
 // require_once(DIR_EXTENSION . 'ovesio/system/library/ovesio/sdk/autoload.php');
