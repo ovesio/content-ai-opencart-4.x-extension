@@ -4,7 +4,7 @@
 This package is released under the **MIT License**.
 We are **not responsible** for any malfunction or improper behavior caused by the use of this package.
 This package is provided as an **example integration**.
-For production-ready integrations, we highly recommend using our official API endpoints and documentation, available at [https://ovesio.com/docs](https://ovesio.com/docs).
+For production-ready integrations, we highly recommend using our official API endpoints and documentation, available at [https://docs.ovesio.com](https://docs.ovesio.com).
 
 ---
 
@@ -136,7 +136,7 @@ Always backup your site files and database before installing new extensions.
 
 ## Support
 This module is developed and maintained by **Ovesio.com**.
-For documentation and API references, visit [https://ovesio.com/docs](https://ovesio.com/docs).
+For documentation and API references, visit [https://docs.ovesio.com](https://docs.ovesio.com).
 
 ## Author
 
